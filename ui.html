@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figma Plugin UI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 16px;
+        }
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Figma Plugin</h3>
+    <img id="preview" src="" alt="Preview Image" style="max-width: 100%; margin-bottom: 16px; display: none;">
+    
+    <label for="extrudeAmount">Extrude Depth:</label>
+    <input type="number" id="extrudeAmount" min="1" max="100" value="10">
+    <button id="extrudeButton">Extrude</button>
+
+    <script>
+        // Receiving a message from 'code.ts' and updating the image preview
+        onmessage = (event) => {
+            const msg = event.data.pluginMessage;
+            if (msg.type === 'updateImage') {
+                const imgElement = document.getElementById('preview');
+                imgElement.src = msg.image;
+                imgElement.style.display = 'block';
+            }
+        }
+
+        // Sending a message to 'code.ts' when extrude button is clicked
+        document.getElementById('extrudeButton').addEventListener('click', () => {
+            const depth = parseInt(document.getElementById('extrudeAmount').value, 10);
+            parent.postMessage({ pluginMessage: { type: 'extrudeShape', depth: depth } }, '*');
+        });
+    </script>
+</body>
+
+</html>
